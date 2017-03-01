@@ -59,6 +59,9 @@ export default class RichTextEditor extends Component {
 
   constructor() {
     super(...arguments);
+    this.state = {
+      focused: false,
+    };
     this._keyEmitter = new EventEmitter();
     autobind(this);
   }
@@ -113,7 +116,7 @@ export default class RichTextEditor extends Component {
       );
     }
     return (
-      <div className={cx(styles.root, className)}>
+      <div className={cx(styles.root, className, { [styles.root__focused]: this.state.focused })}>
         {editorToolbar}
         <div className={combinedEditorClassName}>
           <Editor
@@ -130,6 +133,8 @@ export default class RichTextEditor extends Component {
             ref="editor"
             spellCheck={true}
             readOnly={readOnly}
+            onFocus={() => this.setState({ focused: true })}
+            onBlur={() => this.setState({ focused: false })}
           />
         </div>
       </div>

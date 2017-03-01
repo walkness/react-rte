@@ -1,9 +1,20 @@
 .root {
   background: #fff;
-  border: 1px solid #ddd;
-  border-radius: 3px;
+  border: 1px solid gray(95%);
   font-family: 'Georgia', serif;
   font-size: 14px;
+  position: relative;
+  padding: 1rem 0;
+  text-align: left;
+}
+
+.root__focused {
+  :global {
+    & .rte-editor-toolbar {
+      visibility: visible;
+      opacity: 1;
+    }
+  }
 }
 
 .editor {

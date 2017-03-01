@@ -84,7 +84,7 @@ export default class EditorToolbar extends Component {
       }
     });
     return (
-      <div className={cx(styles.root, className)}>
+      <div className={cx('rte-editor-toolbar', styles.root, className)}>
         {buttonsGroups}
       </div>
     );
