@@ -5,6 +5,7 @@
   font-size: 14px;
   position: relative;
   padding: 1rem 0;
+  margin-top: 25px;
   text-align: left;
 }
 
@@ -26,7 +27,7 @@
 .editor :global(.public-DraftEditor-content) {
   margin: 0;
   /* 1px is added as transparent border on .DraftEditor-editorContainer */
-  padding: 9px;
+  padding: .75rem 2rem;
 }
 
 .editor :global(.public-DraftEditor-content) {

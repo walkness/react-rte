@@ -116,7 +116,7 @@ export default class RichTextEditor extends Component {
       );
     }
     return (
-      <div className={cx(styles.root, className, { [styles.root__focused]: this.state.focused })}>
+      <div className={cx('rich-text-editor', styles.root, className, { [styles.root__focused]: this.state.focused })}>
         {editorToolbar}
         <div className={combinedEditorClassName}>
           <Editor
