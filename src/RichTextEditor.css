@@ -31,7 +31,7 @@
 }
 
 .editor :global(.public-DraftEditor-content) {
-  overflow: auto;
+  /*overflow: auto;*/
 }
 
 .hidePlaceholder :global(.public-DraftEditorPlaceholder-root) {
@@ -46,6 +46,35 @@
   inside <ul>). Unstyle the parent and style the children. */
 .editor pre {
   margin: 14px 0;
+}
+
+.editor a {
+  display: inline-block;
+  position: relative;
+
+  &::after {
+    content: attr(href);
+    display: block;
+    position: absolute;
+    top: 110%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #000000bb;
+    color: #fff;
+    padding: .5em .75em;
+    border-radius: .5em;
+    font-size: .75em;
+    white-space: nowrap;
+    visibility: hidden;
+    opacity: 0;
+  }
+
+  &:hover {
+    &::after {
+      visibility: visible;
+      opacity: 1;
+    }
+  }
 }
 
 .editor .codeBlock {
