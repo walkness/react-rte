@@ -11,6 +11,7 @@ import PopoverIconButton from '../ui/PopoverIconButton';
 import ButtonGroup from '../ui/ButtonGroup';
 import Dropdown from '../ui/Dropdown';
 import IconButton from '../ui/IconButton';
+import LinkModal from '../../../LinkModal';
 import getEntityAtCursor from './getEntityAtCursor';
 import clearEntityForRange from './clearEntityForRange';
 import autobind from 'class-autobind';
@@ -84,8 +85,19 @@ export default class EditorToolbar extends Component {
       }
     });
     return (
-      <div className={cx('rte-editor-toolbar', styles.root, className)}>
-        {buttonsGroups}
+      <div>
+
+        <div className={cx('rte-editor-toolbar', styles.root, className)}>
+          {buttonsGroups}
+        </div>
+
+        { this.state.showLinkInput ?
+          <LinkModal
+            onSubmit={this._setLink}
+            onCancel={() => this.setState({ showLinkInput: false })}
+          />
+        : null }
+
       </div>
     );
   }
@@ -153,13 +165,12 @@ export default class EditorToolbar extends Component {
     let shouldShowLinkButton = hasSelection || isCursorOnLink;
     return (
       <ButtonGroup key={name}>
-        <PopoverIconButton
+        <IconButton
           label="Link"
           iconName="link"
           isDisabled={!shouldShowLinkButton}
-          showPopover={this.state.showLinkInput}
-          onTogglePopover={this._toggleShowLinkInput}
-          onSubmit={this._setLink}
+          onClick={this._toggleShowLinkInput}
+          focusOnClick={false}
         />
         <IconButton
           label="Remove Link"
@@ -226,10 +237,10 @@ export default class EditorToolbar extends Component {
     this.setState({showLinkInput: !isShowing});
   }
 
-  _setLink(url: string) {
+  _setLink(atts: Object) {
     let {editorState} = this.props;
     let selection = editorState.getSelection();
-    let entityKey = Entity.create(ENTITY_TYPE.LINK, 'MUTABLE', {url});
+    let entityKey = Entity.create(ENTITY_TYPE.LINK, 'MUTABLE', { url: atts.href });
     this.setState({showLinkInput: false});
     this.props.onChange(
       RichUtils.toggleLink(editorState, selection, entityKey)
