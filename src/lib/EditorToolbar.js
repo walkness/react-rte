@@ -3,7 +3,7 @@ import {hasCommandModifier} from 'draft-js/lib/KeyBindingUtil';
 
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
-import {EditorState, Entity, RichUtils} from 'draft-js';
+import {EditorState, ContentState, Entity, RichUtils, Modifier} from 'draft-js';
 import {ENTITY_TYPE} from 'draft-js-utils';
 import DefaultToolbarConfig from './EditorToolbarConfig';
 import StyleButton from './StyleButton';
@@ -11,9 +11,11 @@ import PopoverIconButton from '../ui/PopoverIconButton';
 import ButtonGroup from '../ui/ButtonGroup';
 import Dropdown from '../ui/Dropdown';
 import IconButton from '../ui/IconButton';
+import Button from '../ui/Button';
 import LinkModal from 'Components/LinkModal';
 import getEntityAtCursor from './getEntityAtCursor';
 import clearEntityForRange from './clearEntityForRange';
+import EditorValue from './EditorValue';
 import autobind from 'class-autobind';
 import cx from 'classnames';
 
@@ -60,11 +62,16 @@ export default class EditorToolbar extends Component {
   }
 
   render() {
-    let {className, toolbarConfig} = this.props;
+    let {className, toolbarConfig, onSplitBlock} = this.props;
     if (toolbarConfig == null) {
       toolbarConfig = DefaultToolbarConfig;
     }
     let display = toolbarConfig.display || DefaultToolbarConfig.display;
+
+    if (onSplitBlock) {
+      display = [...display, 'SPLIT_BLOCK_BUTTONS'];
+    }
+
     let buttonsGroups = display.map((groupName) => {
       switch (groupName) {
         case 'INLINE_STYLE_BUTTONS': {
@@ -81,6 +88,9 @@ export default class EditorToolbar extends Component {
         }
         case 'HISTORY_BUTTONS': {
           return this._renderUndoRedo(groupName, toolbarConfig);
+        }
+        case 'SPLIT_BLOCK_BUTTONS': {
+          return this._renderSplitBlock(groupName, toolbarConfig);
         }
       }
     });
@@ -207,6 +217,20 @@ export default class EditorToolbar extends Component {
     );
   }
 
+  _renderSplitBlock(name: string) {
+    return (
+      <ButtonGroup key={name}>
+        <Button
+          label="Split block at cursor"
+          onClick={this._onSplitBlock}
+          focusOnClick={false}
+        >
+          Split block
+        </Button>
+      </ButtonGroup>
+    );
+  }
+
   _onKeypress(event: Object, eventFlags: Object) {
     // Catch cmd+k for use with link insertion.
     if (hasCommandModifier(event) && event.keyCode === 75) {
@@ -316,5 +340,44 @@ export default class EditorToolbar extends Component {
     setTimeout(() => {
       this.props.focusEditor();
     }, 50);
+  }
+
+  _onSplitBlock() {
+    const {editorState, onSplitBlock, onChange} = this.props;
+    const selectionState = editorState.getSelection();
+    const currentContent = editorState.getCurrentContent();
+    const key = selectionState.getAnchorKey();
+    const splitBlocks = Modifier.splitBlock(currentContent, selectionState);
+    const splitKey = splitBlocks.getSelectionAfter().getAnchorKey();
+
+    let nextBlock;
+
+    let before = [];
+    let nextKey = splitKey;
+    do {
+      nextBlock = splitBlocks.getBlockBefore(nextKey);
+      nextKey = nextBlock && nextBlock.getKey();
+      if (nextBlock) {
+        before.unshift(nextBlock);
+      }
+    } while (nextBlock)
+    const beforeContent = ContentState.createFromBlockArray(before);
+
+    const lastBeforeBlock = beforeContent.getLastBlock();
+
+    let after = [];
+    nextKey = lastBeforeBlock && lastBeforeBlock.getKey();
+    do {
+      nextBlock = splitBlocks.getBlockAfter(nextKey);
+      nextKey = nextBlock && nextBlock.getKey();
+      if (nextBlock) {
+        after.push(nextBlock);
+      }
+    } while (nextBlock)
+    const afterContent = ContentState.createFromBlockArray(after);
+
+    onSplitBlock(EditorValue.createFromState(EditorState.createWithContent(afterContent)), () => {
+      onChange(EditorState.createWithContent(beforeContent));
+    });
   }
 }
