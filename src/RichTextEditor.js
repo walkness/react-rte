@@ -113,6 +113,7 @@ export default class RichTextEditor extends Component {
           editorState={editorState}
           onChange={this._onChange}
           focusEditor={this._focus}
+          blurEditor={this._blur}
           toolbarConfig={toolbarConfig}
           onSplitBlock={onSplitBlock}
         />
@@ -136,8 +137,8 @@ export default class RichTextEditor extends Component {
             ref="editor"
             spellCheck={true}
             readOnly={readOnly}
-            onFocus={() => this.setState({ focused: true })}
-            onBlur={() => this.setState({ focused: false })}
+            onFocus={this._onFocus}
+            onBlur={this._onBlur}
           />
         </div>
       </div>
@@ -284,8 +285,24 @@ export default class RichTextEditor extends Component {
     }
   }
 
+  _onFocus(e) {
+    const {onFocus} = this.props;
+    this.setState({ focused: true });
+    if (onFocus) onFocus(e);
+  }
+
+  _onBlur(e) {
+    const {onBlur} = this.props;
+    this.setState({ focused: false });
+    if (onBlur) onBlur(e);
+  }
+
   _focus() {
     this.refs.editor.focus();
+  }
+
+  _blur() {
+    this.refs.editor.blur();
   }
 }
 

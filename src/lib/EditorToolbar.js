@@ -377,6 +377,7 @@ export default class EditorToolbar extends Component {
     const afterContent = ContentState.createFromBlockArray(after);
 
     onSplitBlock(EditorValue.createFromState(EditorState.createWithContent(afterContent)), () => {
+      this.props.blurEditor();
       onChange(EditorState.createWithContent(beforeContent));
     });
   }
