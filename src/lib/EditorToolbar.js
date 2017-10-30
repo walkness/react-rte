@@ -343,14 +343,41 @@ export default class EditorToolbar extends Component {
   }
 
   _onSplitBlock() {
-    const {editorState, onSplitBlock} = this.props;
+    const {editorState, onSplitBlock, onChange} = this.props;
     const selectionState = editorState.getSelection();
     const currentContent = editorState.getCurrentContent();
     const key = selectionState.getAnchorKey();
-    const currentBlock = currentContent.getBlockForKey(key);
     const splitBlocks = Modifier.splitBlock(currentContent, selectionState);
-    const first = ContentState.createFromBlockArray([splitBlocks.getFirstBlock()]);
-    const last = ContentState.createFromBlockArray([splitBlocks.getLastBlock()]);
-    onSplitBlock(EditorValue.createFromState(EditorState.createWithContent(last)));
+    const splitKey = splitBlocks.getSelectionAfter().getAnchorKey();
+
+    let nextBlock;
+
+    let before = [];
+    let nextKey = splitKey;
+    do {
+      nextBlock = splitBlocks.getBlockBefore(nextKey);
+      nextKey = nextBlock && nextBlock.getKey();
+      if (nextBlock) {
+        before.unshift(nextBlock);
+      }
+    } while (nextBlock)
+    const beforeContent = ContentState.createFromBlockArray(before);
+
+    const lastBeforeBlock = beforeContent.getLastBlock();
+
+    let after = [];
+    nextKey = lastBeforeBlock && lastBeforeBlock.getKey();
+    do {
+      nextBlock = splitBlocks.getBlockAfter(nextKey);
+      nextKey = nextBlock && nextBlock.getKey();
+      if (nextBlock) {
+        after.push(nextBlock);
+      }
+    } while (nextBlock)
+    const afterContent = ContentState.createFromBlockArray(after);
+
+    onSplitBlock(EditorValue.createFromState(EditorState.createWithContent(afterContent)), () => {
+      onChange(EditorState.createWithContent(beforeContent));
+    });
   }
 }
