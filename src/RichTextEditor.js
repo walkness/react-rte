@@ -88,6 +88,7 @@ export default class RichTextEditor extends Component {
       disabled,
       toolbarConfig,
       blockStyleFn,
+      onSplitBlock,
       ...otherProps // eslint-disable-line comma-dangle
     } = this.props;
     let editorState = value.getEditorState();
@@ -102,6 +103,7 @@ export default class RichTextEditor extends Component {
     if (readOnly == null) {
       readOnly = disabled;
     }
+
     let editorToolbar;
     if (!readOnly) {
       editorToolbar = (
@@ -112,6 +114,7 @@ export default class RichTextEditor extends Component {
           onChange={this._onChange}
           focusEditor={this._focus}
           toolbarConfig={toolbarConfig}
+          onSplitBlock={onSplitBlock}
         />
       );
     }
