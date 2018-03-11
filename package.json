@@ -1,44 +1,50 @@
 {
   "name": "react-rte",
-  "version": "0.11.0",
+  "version": "0.16.1",
   "description": "React Rich Text Editor",
   "main": "dist/react-rte.js",
+  "files": [
+    "lib",
+    "dist"
+  ],
   "scripts": {
     "build": "npm run build-lib && npm run build-dist",
-    "build-dist": "rimraf dist && webpack",
-    "build-lib": "rimraf lib && babel src --ignore \"_*\" --out-dir lib",
+    "build-dist": "rimraf dist && webpack -p",
+    "build-lib": "rimraf lib && babel src --ignore \"_*\" --out-dir lib --copy-files",
     "lint": "eslint --max-warnings 0 .",
     "typecheck": "flow",
     "prepublish": "npm run build",
     "start": "webpack-dev-server --content-base assets/",
     "test": "npm run lint && npm run typecheck && npm run test-src",
-    "test-src": "mocha \"src/**/__tests__/*.js\""
+    "test-src": "BABEL_ENV=test mocha \"src/**/__tests__/*.js\""
   },
   "dependencies": {
+    "babel-runtime": "^6.23.0",
     "class-autobind": "^0.1.4",
     "classnames": "^2.2.5",
-    "draft-js": "^0.9.1",
-    "draft-js-export-html": "^0.5.1",
-    "draft-js-export-markdown": "^0.2.2",
-    "draft-js-import-html": "^0.3.2",
-    "draft-js-import-markdown": "^0.2.1",
-    "draft-js-utils": "^0.1.7",
+    "draft-js": ">=0.10.0",
+    "draft-js-export-html": ">=0.6.0",
+    "draft-js-export-markdown": ">=0.3.0",
+    "draft-js-import-html": ">=0.4.0",
+    "draft-js-import-markdown": ">=0.3.0",
+    "draft-js-utils": ">=0.2.0",
     "immutable": "^3.8.1"
   },
   "peerDependencies": {
-    "react": "0.14.x || 15.x.x",
-    "react-dom": "0.14.x || 15.x.x"
+    "react": "0.14.x || 15.x.x || 16.x.x",
+    "react-dom": "0.14.x || 15.x.x || 16.x.x"
   },
   "devDependencies": {
     "babel-cli": "^6.18.0",
     "babel-core": "^6.18.2",
     "babel-eslint": "^7.1.0",
-    "babel-loader": "^6.2.7",
-    "babel-plugin-transform-class-properties": "^6.18.0",
+    "babel-loader": "^7.1.1",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.0",
+    "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-es2015": "^6.18.0",
     "babel-preset-react": "^6.11.1",
     "babel-preset-stage-2": "^6.18.0",
-    "css-loader": "^0.25.0",
+    "css-loader": "^0.28.4",
     "css-modules-require-hook": "^4.0.0",
     "eslint": "^3.9.1",
     "eslint-plugin-babel": "^3.3.0",
@@ -50,9 +56,9 @@
     "raw-loader": "^0.5.1",
     "react-addons-test-utils": "^15.0.2",
     "rimraf": "^2.5.4",
-    "style-loader": "^0.13.1",
-    "webpack": "^1.13.3",
-    "webpack-dev-server": "^1.16.2"
+    "style-loader": "^0.18.2",
+    "webpack": "^3.4.0",
+    "webpack-dev-server": "^2.6.1"
   },
   "repository": {
     "type": "git",
@@ -75,6 +81,10 @@
     {
       "name": "André Schmidt",
       "url": "https://github.com/andschdk"
+    },
+    {
+      "name": "Ben Herila",
+      "url": "https://github.com/bherila"
     },
     {
       "name": "Harris Brakmic",

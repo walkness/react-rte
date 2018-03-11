@@ -8,7 +8,7 @@ This is a UI component built completely in React that is meant to be a full-feat
 
 Try the editor here: [react-rte.org/demo][react-rte-demo]
 
-[![Screenshot 1](https://dl.dropboxusercontent.com/u/341900/images/2016-03-08-073550.png)][react-rte-demo]
+[![Screenshot 1](https://ucassets.blob.core.windows.net/uploads/rte.png)][react-rte-demo]
 
 
 ## Getting Started
@@ -18,6 +18,28 @@ Try the editor here: [react-rte.org/demo][react-rte-demo]
 `RichTextEditor` is the main editor component. It is comprised of the Draft.js `<Editor>`, some UI components (e.g. toolbar) and some helpful abstractions around getting and setting content with HTML/Markdown.
 
 `RichTextEditor` is designed to be used like a `textarea` except that instead of `value` being a string, it is an object with `toString` on it. Creating a `value` from a string is also easy using `createValueFromString(markup, 'html')`.
+
+### Browser Compatibility
+
+The scripts are transpiled by Babel to ES6. Additionally, at least one of this package's dependencies does not support IE. So, for IE and back-plat support you will need to include some polyfill in your HTML (#74, #196, #203): `<script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=String.prototype.startsWith,Array.from,Array.prototype.fill,Array.prototype.keys,Array.prototype.findIndex,Number.isInteger&flags=gated"></script>`
+
+### Required Webpack configuration
+
+If you are not using Webpack, you can skip this section. Webpack is required for isomorphic/server-side rendering support in a Node.js environment.
+
+`'react-rte'` contains a bundle that is already built (with CSS) using webpack and is not intended to be consumed again by webpack. So, if you are using webpack you must import RichTextEditor from `react-rte/lib/RichTextEditor` in order to get the un-bundled script which webpack can bundle with your app.
+
+If you are using webpack you must add a css loader or else your webpack build will fail. For example:
+
+```js
+  {
+    test: /\.css$/,
+    loaders: [
+      'style-loader',
+      'css-loader?modules'
+    ]
+  },
+```
 
 ### Example Usage:
 
@@ -58,7 +80,6 @@ class MyStatefulEditor extends Component {
   }
 }
 ```
-
 
 ### Toolbar Customization
 
