@@ -114,7 +114,7 @@ export default class EditorToolbar extends Component {
 
         { this.state.showLinkInput ?
           <LinkModal
-            onSubmit={this._setLink}
+            onSubmit={({ href, nodeId }) => this._setLink(href, { nodeId })}
             onCancel={() => this.setState({ showLinkInput: false })}
           />
         : null }
@@ -360,11 +360,11 @@ export default class EditorToolbar extends Component {
     this._focusEditor();
   }
 
-  _setLink(url: string) {
+  _setLink(url: string, atts) {
     let {editorState} = this.props;
     let contentState = editorState.getCurrentContent();
     let selection = editorState.getSelection();
-    contentState = contentState.createEntity(ENTITY_TYPE.LINK, 'MUTABLE', {url});
+    contentState = contentState.createEntity(ENTITY_TYPE.LINK, 'MUTABLE', {url, ...(atts || {})});
     let entityKey = contentState.getLastCreatedEntityKey();
     let newEditorState = EditorState.push(editorState, contentState);
     this.setState({showLinkInput: false});
